@@ -647,3 +647,45 @@ body {
   position: relative;
   top: -8px;
 }
+
+.nav-auth {
+  margin-left: auto;     /* pushes the whole auth area to the far right */
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;          /* more space between Log in and Sign up */
+}
+
+/* ===== Auth buttons ===== */
+.auth-login {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--concrete);
+  border: 1px solid #4a4336;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, transform .15s;
+}
+.auth-login:hover { border-color: var(--ember); color: #fff; transform: translateY(-1px); }
+
+.auth-signup {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  background: linear-gradient(150deg, var(--oxide), #a83619);
+  color: #fff;
+  border: 1px solid #7c2d1a;
+  cursor: pointer;
+  transition: box-shadow .15s, transform .15s, background .15s;
+}
+.auth-signup:hover {
+  background: linear-gradient(150deg, var(--ember), var(--oxide));
+  box-shadow: 0 0 18px rgba(245, 117, 43, 0.45);
+  transform: translateY(-1px);
+}

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Oswald, Inter, JetBrains_Mono, Jost } from "next/font/google";
 import "./globals.css";
 import Nav from "./Nav";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -28,17 +29,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={`${oswald.variable} ${inter.variable} ${jetbrains.variable} ${jost.variable} antialiased`}
-      >
-        <Nav />
-        {children}
-        <footer className="site-footer">
-          Wipe Day is a fan-made tool and is not affiliated with or endorsed by
-          Facepunch Studios. Rust is a trademark of Facepunch Studios.
-        </footer>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${oswald.variable} ${inter.variable} ${jetbrains.variable} ${jost.variable} antialiased`}
+        >
+          <Nav />
+          {children}
+          <footer className="site-footer">
+            Wipe Day is a fan-made tool and is not affiliated with or endorsed by
+            Facepunch Studios. Rust is a trademark of Facepunch Studios.
+          </footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
