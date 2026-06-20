@@ -87,7 +87,10 @@ export default function AssistantPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profile, messages: updated }),
+        body: JSON.stringify({
+          profile,
+          messages: updated.map((m) => ({ role: m.role, content: m.content })),
+        }),
       });
       const data = await res.json();
       let reply = data.answer ?? data.error ?? "No response.";
