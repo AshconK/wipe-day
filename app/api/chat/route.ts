@@ -18,7 +18,14 @@ Tailor every answer to this player's profile:
 - Platform: ${profile.platform}
 - Server type: ${profile.serverType}
 - Experience: ${profile.experience}
-- Main goal: ${profile.goal}
+
+If the user is asking you to GIVE or SHOW them a base design to build (e.g.
+"give me a starter base", "what should I build", "show me a base"), do NOT
+write a long explanation. Instead respond with exactly the tag [SHOW_BASE] on
+its own, followed by a single short sentence introducing it (e.g. "Here's a
+solid starter base for your group — follow the steps below."). For any other
+question (electricity, raids, expansion, general advice), answer normally
+without the tag.
 
 When the question is about bases, structure your answer like this:
 1. Recommended base — name it, explain why it fits this group size and goal,
@@ -41,7 +48,7 @@ Be specific and explain the "why," not just the "what." Match the depth to the
 player's experience level above.`;
 
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-opus-4-8",
       max_tokens: 4000,
       system: systemPrompt,
       messages,

@@ -19,12 +19,11 @@ export default function Nav() {
     <nav className="nav">
       <div className="nav-inner">
         <Link href="/" className="brandmark">
-          <span className="brand-logo">
-            {/* simple placeholder logo mark — swap for your own later */}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff">
-              <path d="M4 20V8l8-5 8 5v12h-5v-6H9v6z" />
-            </svg>
+          <Link href="/" className="brandmark">
+          <img src="/logo.png" alt="Wipe Day logo" className="brand-logo-img" />
+          <span className="brand-text">
           </span>
+        </Link>
           <span className="brand-text">
             <span className="wipe">WIPE</span>{" "}
             <span className="day">DAY</span>

@@ -4,99 +4,96 @@
 import { useState } from "react";
 import Hero from "../Hero";
 import StepThrough from "../StepThrough";
-import { basesForGroup } from "@/lib/baseLibrary";
-
-const tiers = [
-  { id: "Solo", label: "Solo" },
-  { id: "Trio", label: "Duo / Trio / Squad" },   // "Trio" maps to the duo-trio-squad tier
-  { id: "Zerg (10+)", label: "Clan" },
-];
+import { useSavedBases, removeBase, useIsPro } from "@/lib/savedBases";
+import type { LibraryBase } from "@/lib/baseLibrary";
 
 export default function BasesPage() {
-  const [groupSize, setGroupSize] = useState("Solo");
-  const bases = basesForGroup(groupSize);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const savedBases = useSavedBases();
+  const isPro = useIsPro();
+  const [openId, setOpenId] = useState<string | null>(null);
 
-  const selected = bases.find((b) => b.id === selectedId) ?? bases[0] ?? null;
+  const open: LibraryBase | null =
+    savedBases.find((b) => b.id === openId) ?? null;
 
   return (
     <main className="min-h-screen p-6 max-w-5xl mx-auto">
       <Hero
-        title="Base Designs"
-        subtitle="Step-by-step build guides, organized by group size. Pick your size and follow along."
-        image="/scenes/base.jpg"
+        title="My Bases"
+        subtitle="Your saved base designs, all in one place — revisit any build whenever you need it."
       />
 
-      {/* group size picker */}
-      <div className="mb-6">
-        <span className="field-label">Group size</span>
-        <div className="flex flex-wrap gap-2">
-          {tiers.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => {
-                setGroupSize(t.id);
-                setSelectedId(null);
-              }}
-              className={
-                "px-3 py-2 text-sm rounded border " +
-                (t.id === groupSize
-                  ? "bg-[#c9472b] border-[#7c2d1a] text-white"
-                  : "bg-[#1d1a14] border-[#3a342a] text-stone-300 hover:border-[#c9472b]")
-              }
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {bases.length === 0 ? (
+      {/* ===== Saved bases hub ===== */}
+      {!isPro ? (
         <div className="panel p-6 text-stone-400">
-          No base designs added for this group size yet.
+          Saving bases is a <span style={{ color: "var(--ember)" }}>Pro</span>&nbsp;feature.
+          Accounts and saved portfolios are coming soon — once you&apos;re signed in,
+          every base you save from the Assistant will live here.
+        </div>
+      ) : savedBases.length === 0 ? (
+        <div className="panel p-6 text-stone-400">
+          You haven&apos;t saved any bases yet. When the Assistant shows you a base,
+          hit <span style={{ color: "var(--ember)" }}>Save Base</span> and it&apos;ll appear here.
         </div>
       ) : (
-        <div className="grid md:grid-cols-[200px_1fr] gap-5">
-          {/* base list */}
-          <div className="flex md:flex-col gap-2 flex-wrap">
-            {bases.map((b) => (
-              <button
-                key={b.id}
-                onClick={() => setSelectedId(b.id)}
-                className={
-                  "text-left px-3 py-2 rounded border text-sm transition-colors " +
-                  (selected && b.id === selected.id
-                    ? "bg-[#c9472b] border-[#7c2d1a] text-white"
-                    : "bg-[#1d1a14] border-[#3a342a] text-stone-300 hover:border-[#c9472b]")
-                }
-              >
-                {b.name}
-              </button>
+        <>
+          <p className="field-label">{savedBases.length} saved</p>
+          <div className="grid gap-3 sm:grid-cols-2 mb-8">
+            {savedBases.map((b) => (
+              <div key={b.id} className="panel p-4 card-hover">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold">{b.name}</h3>
+                  <div className="flex gap-2">
+                    <button
+                      className="btn-steel px-3 py-1 text-xs"
+                      onClick={() => setOpenId(openId === b.id ? null : b.id)}
+                    >
+                      {openId === b.id ? "Hide" : "View"}
+                    </button>
+                    <button
+                      className="btn-steel px-3 py-1 text-xs"
+                      onClick={() => { removeBase(b.id); if (openId === b.id) setOpenId(null); }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+
+                {open && open.id === b.id && (
+                  <div className="mt-3">
+                    <p className="field-label">Build guide</p>
+                    <StepThrough steps={b.steps} />
+                    <p className="field-label" style={{ marginTop: "1rem" }}>Build cost</p>
+                    <img
+                      src={b.costImage}
+                      alt={`${b.name} cost`}
+                      className="w-full rounded"
+                      style={{ background: "#1c1917" }}
+                    />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-
-          {/* selected base */}
-          {selected && (
-            <div className="panel p-4">
-              <h2 className="section-title" style={{ marginBottom: "0.8rem" }}>
-                {selected.name}
-              </h2>
-              <p className="field-label">Build guide</p>
-              <StepThrough steps={selected.steps} />
-
-              <p className="field-label" style={{ marginTop: "1.2rem" }}>
-                Build cost
-              </p>
-              <img
-                src={selected.costImage}
-                alt={`${selected.name} cost`}
-                className="w-full rounded"
-                style={{ maxWidth: "32rem", background: "#1c1917" }}
-              />
-            </div>
-          )}
-        </div>
+        </>
       )}
+
+      {/* ===== Upload your own (scaffolded, locked for later) ===== */}
+      <section className="mt-6">
+        <h2 className="section-title">Upload Your Own</h2>
+        <div className="panel p-6 text-stone-400" style={{ opacity: 0.8 }}>
+          <p style={{ margin: 0 }}>
+            <span style={{ color: "var(--ember)" }}>Coming soon.</span> Share your own
+            base designs — upload your build clips and cost sheet, and keep them in your
+            personal library.
+          </p>
+          <button className="save-btn locked mt-3" disabled title="Coming soon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 016 0v3z" />
+            </svg>
+            Upload a Base (Coming soon)
+          </button>
+        </div>
+      </section>
     </main>
   );
 }

@@ -29,6 +29,10 @@ npm install
 
 Create a `.env.local` file in the root with your Anthropic API key:
 
+```
+ANTHROPIC_API_KEY=your_key_here
+```
+
 Then:
 
 ```bash
@@ -36,11 +40,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
-
-## Status
-
-Active work in progress. Base design content and verified cost data are being filled in; accounts and subscriptions are planned.
-
----
-
-*Wipe Day is a fan-made tool and is not affiliated with or endorsed by Facepunch Studios. Rust is a trademark of Facepunch Studios.*
