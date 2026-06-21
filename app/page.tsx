@@ -14,26 +14,11 @@ const stats = [
   { num: "Free", label: "No account needed" },
 ];
 
-const features = [
-  {
-    title: "Tailored to your group",
-    body: "Advice fits your group size, server type, and the goal you describe — not generic tips.",
-  },
-  {
-    title: "Costs you can trust",
-    body: "Build and raid numbers come from a verified data table, not the AI's guesses.",
-  },
-  {
-    title: "Visual base library",
-    body: "Real base screenshots, picked at random from the right tier for your group.",
-  },
-];
-
 export default function HomePage() {
   return (
     <main className="min-h-screen p-6 max-w-5xl mx-auto">
-      {/* Parallax hero */}
-      <section className="home-hero parallax" style={heroStyle}>
+      {/* Hero */}
+      <section className="home-hero" style={heroStyle}>
         <div className="home-hero-content">
           <div className="ember-bar" />
           <h1>
@@ -63,40 +48,113 @@ export default function HomePage() {
         </div>
       </Reveal>
 
-      {/* Features */}
-      <Reveal>
-        <h2 className="section-title">Why use it</h2>
-        <div className="feature-grid">
-          {features.map((f) => (
-            <div key={f.title} className="feature">
-              <svg className="feature-icon" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2l3 6 6 .9-4.5 4.3 1 6L12 17l-5.5 3 1-6L3 8.9 9 8z" />
-              </svg>
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
+      {/* Inside Wipe Day showcase */}
+      <section className="showcase-section">
+        <Reveal>
+          <div className="showcase-head">
+            <span className="eyebrow">Inside Wipe Day</span>
+            <h2>Every tool, built to win the wipe.</h2>
+          </div>
+        </Reveal>
+
+        {/* 01 Assistant */}
+        <Reveal>
+          <div className="showcase-row">
+            <div className="showcase-copy">
+              <div className="sc-index">01</div>
+              <span className="sc-label">Assistant</span>
+              <h3>Ask. Get a base. Build it.</h3>
+              <p>
+                Tell it your group size and server, ask for a base, and it pulls up a
+                guided, step-by-step build — not a wall of text.
+              </p>
+              <Link href="/assistant" className="sc-link">Open the Assistant →</Link>
             </div>
-          ))}
+            <div className="sc-preview">
+              <div className="sc-chips">
+                <span className="sc-chip live">● Live</span>
+                <span className="sc-chip">Solo</span>
+                <span className="sc-chip">Vanilla</span>
+              </div>
+              <div className="sc-bubble-user">give me a starter base</div>
+              <div className="sc-bubble-ai">
+                Here&apos;s a solid solo starter — follow the steps below.
+                <div className="sc-steps"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* 02 Base Designs */}
+        <Reveal>
+          <div className="showcase-row reverse">
+            <div className="showcase-copy">
+              <div className="sc-index">02</div>
+              <span className="sc-label">Base Designs</span>
+              <h3>Your own base library.</h3>
+              <p>
+                Save the builds you like to your personal hub and revisit the
+                step-by-step guide any time — your bases, all in one place.
+              </p>
+              <Link href="/bases" className="sc-link">View My Bases →</Link>
+            </div>
+            <div className="sc-preview">
+              <div className="sc-chips">
+                <span className="sc-chip">Saved</span>
+                <span className="sc-chip">Solo</span>
+              </div>
+              <div className="sc-minicard">
+                <div className="sc-thumb"></div>
+                <div>
+                  <div className="nm">Bunker Base</div>
+                  <div className="sc-steps"><span></span><span></span><span></span></div>
+                </div>
+              </div>
+              <div className="sc-minicard">
+                <div className="sc-thumb"></div>
+                <div>
+                  <div className="nm">2x2 Starter</div>
+                  <div className="sc-steps"><span></span><span></span><span></span><span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* 03 Raid Calculator */}
+        <Reveal>
+          <div className="showcase-row">
+            <div className="showcase-copy">
+              <div className="sc-index">03</div>
+              <span className="sc-label">Raid Calculator</span>
+              <h3>Know the cost before you boom.</h3>
+              <p>
+                Pick what you&apos;re breaking and your explosive — it totals the
+                explosives and raw resources you need, no guessing.
+              </p>
+              <Link href="/raid" className="sc-link">Open the Calculator →</Link>
+            </div>
+            <div className="sc-preview">
+              <div className="sc-chips">
+                <span className="sc-chip live">Target</span>
+                <span className="sc-chip">Sheet Metal Door</span>
+              </div>
+              <div className="sc-line"><span>Rockets</span><span className="val">4</span></div>
+              <div className="sc-line"><span>Satchels</span><span className="val">10</span></div>
+              <div className="sc-total"><span>Sulfur</span><span>5,600</span></div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* CTA */}
+      <Reveal>
+        <div className="home-cta">
+          <h2>Gear up for wipe day.</h2>
+          <p>Plan your base, price your raids, and build smarter — free to start.</p>
+          <Link href="/assistant" className="cta-primary">Open the Assistant</Link>
         </div>
       </Reveal>
-
-      {/* Tools */}
-      <Reveal>
-        <h2 className="section-title">Tools</h2>
-      </Reveal>
-      <div className="tool-grid home-section">
-        {[
-          { href: "/assistant", title: "AI Assistant", body: "Tailored base, expansion and electricity advice for your group and goal." },
-          { href: "/raid", title: "Raid Calculator", body: "Pick what you're breaking and your explosive — exact resources, no guessing." },
-          { href: "/pricing", title: "Go Pro", body: "Higher limits and premium features. See the plans." },
-        ].map((t, i) => (
-          <Reveal key={t.href} delay={i * 120}>
-            <Link href={t.href} className="tool-card">
-              <h3>{t.title}</h3>
-              <p>{t.body}</p>
-            </Link>
-          </Reveal>
-        ))}
-      </div>
 
       {/* News */}
       <Reveal>
@@ -104,9 +162,7 @@ export default function HomePage() {
         <div>
           {news.map((n) => (
             <div key={n.id} className="news-item">
-              <span className={"news-tag " + n.type}>
-                {n.type === "rust" ? "Rust" : "Site"}
-              </span>
+              <span className={"news-tag " + n.type}>{n.type === "rust" ? "Rust" : "Site"}</span>
               <span className="news-date">{n.date}</span>
               <h4>{n.title}</h4>
               <p>{n.body}</p>

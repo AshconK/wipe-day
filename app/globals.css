@@ -689,3 +689,104 @@ body {
   box-shadow: 0 0 18px rgba(245, 117, 43, 0.45);
   transform: translateY(-1px);
 }
+
+/* ===== Inside Wipe Day showcase ===== */
+.showcase-section { margin: 4.5rem 0 2rem; }
+.showcase-head { text-align: center; margin-bottom: 1rem; }
+.showcase-head .eyebrow {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase; letter-spacing: 0.22em; font-size: 0.78rem; color: var(--ember);
+}
+.showcase-head h2 {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase; font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: #f3ece0; margin: 0.4rem 0 0;
+}
+
+.showcase-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+  align-items: center; padding: 3rem 0; border-top: 1px solid #241f18;
+}
+.showcase-row.reverse .showcase-copy { order: 2; }
+.showcase-row.reverse .sc-preview { order: 1; }
+
+.showcase-copy .sc-index {
+  font-family: var(--font-display), sans-serif; font-size: 3.4rem; line-height: 1;
+  color: #3a342a; font-weight: 700;
+}
+.showcase-copy .sc-label {
+  display: inline-block; font-family: var(--font-display), sans-serif;
+  text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.75rem;
+  color: var(--ember); margin: 0.4rem 0 0.8rem;
+}
+.showcase-copy h3 {
+  font-family: var(--font-display), sans-serif; text-transform: uppercase;
+  font-size: 1.9rem; line-height: 1.05; color: #f3ece0; margin: 0 0 0.7rem;
+}
+.showcase-copy p { color: #b8ae9f; line-height: 1.6; margin: 0 0 1.1rem; max-width: 30rem; }
+.sc-link {
+  font-family: var(--font-display), sans-serif; text-transform: uppercase;
+  letter-spacing: 0.05em; font-size: 0.8rem; color: var(--ember);
+  display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.sc-link:hover { color: #fff; }
+
+.sc-preview {
+  background: linear-gradient(160deg, #1f1b15, #16130e);
+  border: 1px solid #332d24; border-radius: 10px; padding: 1rem;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+}
+.sc-chips { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+.sc-chip {
+  font-family: var(--font-mono), monospace; font-size: 0.62rem; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 0.18rem 0.5rem; border-radius: 4px;
+  border: 1px solid #3a342a; color: #b8ae9f;
+}
+.sc-chip.live { color: var(--ember); border-color: #7c2d1a; }
+
+.sc-bubble-user {
+  margin-left: auto; max-width: 78%; background: var(--oxide); color: #fff;
+  padding: 0.5rem 0.7rem; border-radius: 8px; font-size: 0.82rem; margin-bottom: 0.6rem;
+}
+.sc-bubble-ai {
+  max-width: 88%; background: #221d16; border: 1px solid #332d24;
+  padding: 0.6rem 0.7rem; border-radius: 8px; font-size: 0.82rem; color: var(--concrete);
+}
+.sc-steps { display: flex; gap: 4px; margin-top: 0.5rem; }
+.sc-steps span { flex: 1; height: 4px; border-radius: 2px; background: #3a342a; }
+.sc-steps span:first-child { background: var(--ember); }
+
+.sc-minicard {
+  display: flex; gap: 0.6rem; align-items: center; background: #221d16;
+  border: 1px solid #332d24; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;
+}
+.sc-thumb {
+  width: 56px; height: 42px; border-radius: 5px; background: #15110c;
+  border: 1px solid #332d24; flex-shrink: 0;
+}
+.sc-minicard .nm { font-size: 0.85rem; color: #efe7d8; font-weight: 600; margin-bottom: 0.35rem; }
+
+.sc-line {
+  display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--concrete);
+  padding: 0.35rem 0; border-bottom: 1px solid #241f18;
+}
+.sc-line .val { font-family: var(--font-mono), monospace; color: #efe7d8; }
+.sc-total { display: flex; justify-content: space-between; margin-top: 0.5rem; padding-top: 0.5rem; font-family: var(--font-mono), monospace; }
+.sc-total span:last-child { color: var(--ember); font-size: 1.15rem; }
+
+.home-cta {
+  text-align: center; padding: 3.5rem 1.5rem; margin: 3rem 0 1rem;
+  border: 1px solid #332d24; border-radius: 12px;
+  background: radial-gradient(120% 130% at 50% 0%, rgba(201,71,43,0.18), transparent 60%), #1a1610;
+}
+.home-cta h2 {
+  font-family: var(--font-display), sans-serif; text-transform: uppercase;
+  font-size: clamp(1.6rem, 4vw, 2.4rem); color: #f3ece0; margin: 0 0 0.6rem;
+}
+.home-cta p { color: #b8ae9f; margin: 0 0 1.4rem; }
+
+@media (max-width: 760px) {
+  .showcase-row { grid-template-columns: 1fr; gap: 1.5rem; }
+  .showcase-row.reverse .showcase-copy { order: 1; }
+  .showcase-row.reverse .sc-preview { order: 2; }
+}
