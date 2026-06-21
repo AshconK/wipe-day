@@ -15,6 +15,7 @@ export interface LibraryBase {
   id: string;
   tier: Tier;
   name: string;
+  thumbnail?: string;
   steps: BuildStep[];
   costImage: string;
 }
@@ -30,6 +31,7 @@ function makeBase(tier: Tier, n: number, stepCount = 4): LibraryBase {
     id: `${tier}-${n}`,
     tier,
     name: `Base ${n}`,
+    thumbnail: `${folder}/thumb.jpg`,
     steps,
     costImage: `${folder}/cost.jpg`,
   };
@@ -59,4 +61,18 @@ export function randomBaseForGroup(groupSize: string): LibraryBase | null {
 export function basesForGroup(groupSize: string): LibraryBase[] {
   const tier = tierForGroup(groupSize);
   return baseLibrary.filter((b) => b.tier === tier);
+}
+
+// Picks a random base from the group's tier, excluding the given base IDs.
+// Returns null if every base in the tier is excluded.
+export function randomBaseForGroupExcluding(
+  groupSize: string,
+  excludeIds: string[]
+): LibraryBase | null {
+  const tier = tierForGroup(groupSize);
+  const pool = baseLibrary.filter(
+    (b) => b.tier === tier && !excludeIds.includes(b.id)
+  );
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
 }

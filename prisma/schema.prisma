@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A base a user has saved to their portfolio.
+model SavedBase {
+  id        String   @id @default(cuid())
+  userId    String   // the Clerk user ID of the owner
+  baseId    String   // which library base (e.g. "solo-1")
+  baseName  String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model User {
+  id        String   @id              // the Clerk user ID
+  isPro     Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model DailyUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  day       String   // "2026-06-21"
+  baseReqs  Int      @default(0)
+
+  @@unique([userId, day])
+}

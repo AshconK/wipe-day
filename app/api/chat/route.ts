@@ -2,12 +2,30 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { costReference } from "@/lib/costs";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { consumeBaseRequest } from "@/lib/usage";
 
 const anthropic = new Anthropic();
 
 export async function POST(req: Request) {
   try {
     const { profile, messages } = await req.json();
+
+    // Is this user asking for a base design? (simple intent check)
+    const lastMsg = messages[messages.length - 1]?.content?.toLowerCase() ?? "";
+    const wantsBase = /\bbase\b/.test(lastMsg) && /(give|show|provide|another|design|build|starter|good|recommend|suggest|need|want|some|a base)/.test(lastMsg);
+
+    if (wantsBase) {
+      const { userId } = await auth();
+      const user = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
+      const allowed = await consumeBaseRequest(userId, user?.isPro ?? false);
+      if (!allowed) {
+        return NextResponse.json({
+          answer: "You've used your 3 free base requests for today. Upgrade to Pro for unlimited base designs, or come back tomorrow.",
+        });
+      }
+    }
 
     const systemPrompt = `You are an expert assistant for the survival game Rust.
 You give practical, detailed advice on starter bases, base expansion, raid
@@ -19,13 +37,15 @@ Tailor every answer to this player's profile:
 - Server type: ${profile.serverType}
 - Experience: ${profile.experience}
 
-If the user is asking you to GIVE or SHOW them a base design to build (e.g.
-"give me a starter base", "what should I build", "show me a base"), do NOT
-write a long explanation. Instead respond with exactly the tag [SHOW_BASE] on
-its own, followed by a single short sentence introducing it (e.g. "Here's a
-solid starter base for your group — follow the steps below."). For any other
-question (electricity, raids, expansion, general advice), answer normally
-without the tag.
+IMPORTANT — BASE DESIGN REQUESTS:
+If the user asks you to give, show, provide, recommend, or suggest a base — in ANY phrasing, 
+including follow-ups like "another base", "one more", "a different one", "what about a base", 
+"got a base for me" — you MUST respond with ONLY the tag [SHOW_BASE] followed by a single short 
+sentence (one line, no more). Do NOT write a long explanation, do NOT describe the base in detail, 
+do NOT list steps or materials. The base guide is shown visually to the user, so your text must stay 
+to one short intro sentence. Example response: "[SHOW_BASE] Here's a solid starter base for your group — follow the steps below."
+
+For any NON-base question (electricity, raids, expansion, general strategy), answer normally with full detail and do NOT use the tag.
 
 When the question is about bases, structure your answer like this:
 1. Recommended base — name it, explain why it fits this group size and goal,

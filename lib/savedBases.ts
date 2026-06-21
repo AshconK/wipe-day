@@ -1,46 +1,64 @@
 // lib/savedBases.ts
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "@clerk/nextjs";
 import type { LibraryBase } from "./baseLibrary";
 
-// ----- Pro gate (placeholder until real auth exists) -----
-// Saving is a Pro feature. No accounts yet, so this is false and the Save
-// button shows a locked state. Flip to true to TEST the save flow locally.
-// Later, replace this with a real check against the signed-in user's plan.
-const PRO_ENABLED = false;
 export function useIsPro(): boolean {
-  return PRO_ENABLED;
-}
-
-// ----- Swappable storage layer -----
-// In-memory for now (clears on refresh, not tied to an account). When the
-// database is added, reimplement getSaved/saveBase/removeBase to read & write
-// the DB for the signed-in user — nothing else in the app needs to change.
-let saved: LibraryBase[] = [];
-const listeners = new Set<() => void>();
-const emit = () => listeners.forEach((l) => l());
-
-export function isSaved(id: string): boolean {
-  return saved.some((b) => b.id === id);
-}
-export function saveBase(base: LibraryBase) {
-  if (!saved.some((b) => b.id === base.id)) {
-    saved = [...saved, base];
-    emit();
-  }
-}
-export function removeBase(id: string) {
-  saved = saved.filter((b) => b.id !== id);
-  emit();
-}
-
-// React hook — re-renders subscribers whenever the saved list changes.
-export function useSavedBases(): LibraryBase[] {
-  const [list, setList] = useState<LibraryBase[]>(saved);
+  const { isSignedIn } = useAuth();
+  const [isPro, setIsPro] = useState(false);
   useEffect(() => {
-    const update = () => setList([...saved]);
-    listeners.add(update);
-    update();
-    return () => { listeners.delete(update); };
-  }, []);
-  return list;
+    if (!isSignedIn) { setIsPro(false); return; }
+    fetch("/api/me")
+      .then((r) => r.json())
+      .then((d) => setIsPro(!!d.isPro))
+      .catch(() => setIsPro(false));
+  }, [isSignedIn]);
+  return isPro;
+}
+
+// What the database returns per saved row.
+type SavedRow = { baseId: string; baseName: string };
+
+// Hook: load + manage the signed-in user's saved bases from the database.
+export function useSavedBases() {
+  const { isSignedIn } = useAuth();
+  const [saved, setSaved] = useState<SavedRow[]>([]);
+
+  const refresh = useCallback(async () => {
+    if (!isSignedIn) { setSaved([]); return; }
+    try {
+      const res = await fetch("/api/saved");
+      const data = await res.json();
+      setSaved(data.bases ?? []);
+    } catch {
+      setSaved([]);
+    }
+  }, [isSignedIn]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  const save = useCallback(async (base: LibraryBase): Promise<string | null> => {
+    const res = await fetch("/api/saved", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ baseId: base.id, baseName: base.name }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return data.message ?? "Couldn't save that base.";
+    }
+    refresh();
+    return null; // success
+  }, [refresh]);
+
+  const remove = useCallback(async (baseId: string) => {
+    await fetch(`/api/saved?baseId=${encodeURIComponent(baseId)}`, { method: "DELETE" });
+    refresh();
+  }, [refresh]);
+
+  const isSaved = useCallback((baseId: string) => saved.some((b) => b.baseId === baseId), [saved]);
+
+  return { saved, save, remove, isSaved, refresh };
 }

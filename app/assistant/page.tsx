@@ -5,8 +5,10 @@ import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import StepThrough from "../StepThrough";
-import { randomBaseForGroup, type LibraryBase } from "@/lib/baseLibrary";
 import SaveBaseButton from "../SaveBaseButton";
+import { randomBaseForGroupExcluding, type LibraryBase } from "@/lib/baseLibrary";
+import { useSavedBases } from "@/lib/savedBases";
+
 
 const defaultProfile = {
   groupSize: "Solo",
@@ -58,6 +60,8 @@ export default function AssistantPage() {
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(0);
   const endRef = useRef<HTMLDivElement>(null);
+  const { saved } = useSavedBases();
+  const [shownBaseIds, setShownBaseIds] = useState<string[]>([]);
 
   // cycle loading messages
   useEffect(() => {
@@ -97,7 +101,25 @@ export default function AssistantPage() {
       let base: LibraryBase | null = null;
       if (reply.includes("[SHOW_BASE]")) {
         reply = reply.replace("[SHOW_BASE]", "").trim();
-        base = randomBaseForGroup(profile.groupSize);
+        const savedIds = saved.map((s) => s.baseId);
+        const exclude = [...savedIds, ...shownBaseIds];
+        base = randomBaseForGroupExcluding(profile.groupSize, exclude);
+
+        // pool exhausted — reset the "shown this session" list and try again
+        // (still avoid the very last one shown, so no back-to-back repeat)
+        if (!base) {
+          const lastShown = shownBaseIds[shownBaseIds.length - 1];
+          const retryExclude = lastShown ? [...savedIds, lastShown] : savedIds;
+          base = randomBaseForGroupExcluding(profile.groupSize, retryExclude);
+          setShownBaseIds(lastShown ? [lastShown] : []);
+        }
+
+        if (!base) {
+          reply = "You've saved every base design available for your group size! Remove one from My Bases to get fresh suggestions, or check back as new designs are added.";
+        } else {
+          setShownBaseIds((prev) => [...prev, base!.id]);
+          if (!reply) reply = "Here's a base design for your group — follow the steps below.";
+        }
       }
       setMessages((prev) => [...prev, { role: "assistant", content: reply, base }]);
     } catch {
