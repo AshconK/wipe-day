@@ -4,5 +4,9 @@ import { getCurrentUser } from "@/lib/getUser";
 
 export async function GET() {
   const user = await getCurrentUser();
-  return NextResponse.json({ isPro: user?.isPro ?? false });
+  const plan = user?.plan ?? "free";
+  return NextResponse.json({
+    plan,
+    isPro: plan === "pro" || plan === "clan", // both paid tiers count as "pro" for gating
+  });
 }

@@ -19,8 +19,9 @@ model SavedBase {
 }
 
 model User {
-  id        String   @id              // the Clerk user ID
+  id        String   @id
   isPro     Boolean  @default(false)
+  plan      String   @default("free")   // "free" | "pro" | "clan"
   createdAt DateTime @default(now())
 }
 
@@ -32,3 +33,4 @@ model DailyUsage {
 
   @@unique([userId, day])
 }
+

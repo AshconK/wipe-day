@@ -2,6 +2,8 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { news } from "@/lib/news";
+import Scramble from "./Scramble";
+import Parallax from "./Parallax";
 
 const heroStyle = {
   backgroundImage: `radial-gradient(120% 110% at 50% -10%, rgba(201,71,43,0.20), transparent 55%), linear-gradient(180deg, rgba(22,20,15,0.55), rgba(22,20,15,0.92)), url(/scenes/hero.gif)`,
@@ -19,11 +21,11 @@ export default function HomePage() {
     <main className="min-h-screen p-6 max-w-5xl mx-auto">
       {/* Hero */}
       <section className="home-hero" style={heroStyle}>
+        <div className="dot-grid" />
         <div className="home-hero-content">
-          <div className="ember-bar" />
           <h1>
             Raid smarter.<br />
-            Build <span className="accent">unbreakable</span>.
+            Build <Scramble text="UNBREAKABLE" className="accent" />.
           </h1>
           <p>
             Your Rust command center — tailored base plans, expansion strategy,
@@ -49,7 +51,8 @@ export default function HomePage() {
       </Reveal>
 
       {/* Inside Wipe Day showcase */}
-      <section className="showcase-section">
+      <section className="showcase-section" style={{ position: "relative" }}>
+        <Parallax speed={0.08}><div className="parallax-layer" /></Parallax>
         <Reveal>
           <div className="showcase-head">
             <span className="eyebrow">Inside Wipe Day</span>
@@ -72,7 +75,7 @@ export default function HomePage() {
             </div>
             <div className="sc-preview">
               <div className="sc-chips">
-                <span className="sc-chip live">● Live</span>
+                <span className="sc-chip live">Live</span>
                 <span className="sc-chip">Solo</span>
                 <span className="sc-chip">Vanilla</span>
               </div>

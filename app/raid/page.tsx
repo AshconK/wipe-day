@@ -110,26 +110,35 @@ export default function RaidCalculator() {
         <div className="grid sm:grid-cols-2 gap-3 mt-1">
           {constructions.map((c) => {
             const viable = c.destroy[explosiveId] !== undefined;
+            const qty = quantities[c.id] || 0;
             return (
-              <div
-                key={c.id}
-                className="grid grid-cols-[1fr_auto] items-center gap-3 bg-[#1d1a14] border border-[#3a342a] rounded px-3 py-2"
-              >
-                <span
-                  className={
-                    "text-sm " + (viable ? "" : "text-stone-500 line-through")
-                  }
-                >
-                  {c.name}
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  className="field data text-center"
-                  style={{ width: "4.5rem" }}
-                  value={quantities[c.id] || 0}
-                  onChange={(e) => setQty(c.id, parseInt(e.target.value, 10))}
-                />
+              <div key={c.id} className={"raid-row" + (viable ? "" : " disabled")}>
+                <span className="rname">{c.name}</span>
+                <div className="qty-stepper">
+                  <button
+                    type="button"
+                    className="qty-btn minus"
+                    onClick={() => setQty(c.id, qty - 1)}
+                    aria-label={`Decrease ${c.name}`}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min={0}
+                    className="field data"
+                    value={qty}
+                    onChange={(e) => setQty(c.id, parseInt(e.target.value, 10))}
+                  />
+                  <button
+                    type="button"
+                    className="qty-btn plus"
+                    onClick={() => setQty(c.id, qty + 1)}
+                    aria-label={`Increase ${c.name}`}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -137,24 +146,24 @@ export default function RaidCalculator() {
         </div>
 
       {/* results */}
+      {/* results */}
       <div className="panel p-5">
-        <h2 className="text-lg font-semibold mb-3">Total cost</h2>
+        <span className="raid-label">Total cost</span>
         {!hasSelection ? (
           <p className="text-stone-400 text-sm">
             Add some quantities above to see what the raid costs.
           </p>
         ) : (
           <>
-            <p className="data text-xl mb-3" style={{ color: "var(--ember)" }}>
-              {totalExplosives} × {explosive.name}
-            </p>
-            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1">
+            <div className="raid-result-head">
+              <span className="raid-result-count">{totalExplosives}</span>
+              <span className="raid-result-count-label">{explosive.name}</span>
+            </div>
+            <div className="raid-res-grid">
               {Object.entries(resources).map(([res, amt]) => (
-                <div key={res} className="flex justify-between data text-sm">
-                  <span className="text-stone-300">
-                    {RES_LABELS[res] ?? res}
-                  </span>
-                  <span>{amt.toLocaleString()}</span>
+                <div key={res} className="raid-res-row">
+                  <span className="raid-res-name">{RES_LABELS[res] ?? res}</span>
+                  <span className="raid-res-val">{amt.toLocaleString()}</span>
                 </div>
               ))}
             </div>

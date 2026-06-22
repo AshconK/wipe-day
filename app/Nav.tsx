@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { usePlan } from "@/lib/savedBases";
 
 const tabs = [
   { href: "/", label: "Home" },
@@ -16,6 +17,7 @@ const tabs = [
 
 export default function Nav() {
   const pathname = usePathname();
+  const plan = usePlan();
   return (
     <nav className="nav">
       <div className="nav-inner">
@@ -43,7 +45,11 @@ export default function Nav() {
             </SignUpButton>
           </Show>
           <Show when="signed-in">
-            <UserButton />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              {plan === "pro" && <span className="plan-badge pro">Pro</span>}
+              {plan === "clan" && <span className="plan-badge clan">Clan</span>}
+              <UserButton />
+            </div>
           </Show>
         </div>
       </div>

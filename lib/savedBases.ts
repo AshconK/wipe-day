@@ -18,6 +18,20 @@ export function useIsPro(): boolean {
   return isPro;
 }
 
+// Returns the user's plan: "free" | "pro" | "clan"
+export function usePlan(): string {
+  const { isSignedIn } = useAuth();
+  const [plan, setPlan] = useState("free");
+  useEffect(() => {
+    if (!isSignedIn) { setPlan("free"); return; }
+    fetch("/api/me")
+      .then((r) => r.json())
+      .then((d) => setPlan(d.plan ?? "free"))
+      .catch(() => setPlan("free"));
+  }, [isSignedIn]);
+  return plan;
+}
+
 // What the database returns per saved row.
 type SavedRow = { baseId: string; baseName: string };
 
